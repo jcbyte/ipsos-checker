@@ -14,17 +14,29 @@ def require_env(name: str) -> str:
 
 def main():
     with sync_playwright() as p:
+        # Launch browser instance
         browser = p.chromium.launch(headless=False)
         context = browser.new_context()
         page = context.new_page()
 
-        print("1: Navigating to iShopForIpsos")
+        # Navigate to iShopForIpsos
         page.goto("https://uk.ishopforipsos.com/next/fieldportal/")
 
+        email_field = page.locator("#email")
+        password_field = page.locator("#password")
+        login_btn = page.locator("#btn-login")
+
+        # Wait for login elements to load before continuing
+        email_field.wait_for()
+        password_field.wait_for()
+        login_btn.wait_for()
+
+        # Enter credentials and login
         email = require_env("IPSOS_EMAIL")
+        email_field.fill(email)
         password = require_env("IPSOS_PASSW")
-        page.fill("#email", email)
-        page.fill("#password", password)
+        password_field.fill(password)
+        login_btn.click()
 
         input("AWAIT")
         browser.close()
