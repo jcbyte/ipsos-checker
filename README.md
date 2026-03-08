@@ -4,7 +4,7 @@ A lightweight python tool using playwright to check job listings for specific po
 
 ## Running
 
-Run run.ps1 to start the script.
+Use `run.ps1` to start the script.
 This automatically sets up the virtual environment and installs any missing dependencies.
 
 ## Environment
