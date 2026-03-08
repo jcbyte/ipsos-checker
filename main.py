@@ -1,7 +1,15 @@
 import os
+from enum import StrEnum
 
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
+
+
+class Colours(StrEnum):
+    CYAN = "\033[96m"
+    RED = "\033[91m"
+    GRAY = "\033[90m"
+    RESET = "\033[0m"
 
 
 def require_env(name: str) -> str:
@@ -13,6 +21,9 @@ def require_env(name: str) -> str:
 
 
 def main():
+    postcode = require_env("POSTCODE")
+    print(f"🚀 Finding jobs for {Colours.CYAN}{postcode}{Colours.RESET}")
+
     with sync_playwright() as p:
         # Launch browser instance
         browser = p.chromium.launch(headless=True)
@@ -41,14 +52,16 @@ def main():
         # Get the iframe, the results are stored in
         frame = page.frame_locator("#appContentFrame")
 
-        # Search for given postcode within the results
-        postcode = require_env("POSTCODE")
-        postcode_count = frame.get_by_text(postcode).count()
-        # Print whether the postcode was found or not
-        if postcode_count > 0:
-            print(f"✨ {postcode} is available!")
-        else:
-            print(f"❌ No matches for {postcode}")
+            # Search for given postcode within the results
+            postcode_count = frame.get_by_text(postcode).count()
+            # Print whether the postcode was found or not
+            if postcode_count > 0:
+                print(f"✨ {Colours.CYAN}{postcode}{Colours.RESET} is available!")
+            else:
+                print(f"❌ No listings for {Colours.CYAN}{postcode}{Colours.RESET}.")
+
+        except Exception as e:
+            print(f"🚨 {Colours.RED}Failed to search!{Colours.RESET} {Colours.GRAY}({e}){Colours.RESET}")
 
         # Cleanup
         browser.close()
