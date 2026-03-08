@@ -22,34 +22,28 @@ def main():
         # Navigate to iShopForIpsos
         page.goto("https://uk.ishopforipsos.com/next/fieldportal/")
 
-        email_field = page.locator("#email")
-        password_field = page.locator("#password")
-        login_btn = page.locator("#btn-login")
-
-        # Wait for login elements to load before continuing
-        email_field.wait_for()
-        password_field.wait_for()
-        login_btn.wait_for()
+        page.wait_for_load_state(state="domcontentloaded")
 
         # Enter credentials and login
         email = require_env("IPSOS_EMAIL")
-        email_field.fill(email)
+        page.fill("#email", email)
         password = require_env("IPSOS_PASSW")
-        password_field.fill(password)
-        login_btn.click()
+        page.fill("#password", password)
+        page.click("#btn-login")
 
         # Click side panel navigator to switch to Task List
         page.click('text="Task Board (List)"')
 
         # Wait for the results to load
-        page.wait_for_load_state("networkidle")
+        # ? Waiting until there are no network connections is discouraged
+        page.wait_for_load_state(state="networkidle")
 
         # Get the iframe, the results are stored in
         frame = page.frame_locator("#appContentFrame")
 
         # Search for given postcode within the results
         postcode = require_env("POSTCODE")
-        postcode_count = frame.get_by_text("postcode").count()
+        postcode_count = frame.get_by_text(postcode).count()
         # Print whether the postcode was found or not
         if postcode_count > 0:
             print(f"✨ {postcode} is available!")
@@ -58,8 +52,6 @@ def main():
 
         # Cleanup
         browser.close()
-
-        # todo handle timeouts properly
 
 
 if __name__ == "__main__":
