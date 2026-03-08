@@ -38,7 +38,25 @@ def main():
         password_field.fill(password)
         login_btn.click()
 
-        input("AWAIT")
+        # Click side panel navigator to switch to Task List
+        page.click('text="Task Board (List)"')
+
+        # Wait for the results to load
+        page.wait_for_load_state("networkidle")
+
+        # Get the iframe, the results are stored in
+        frame = page.frame_locator("#appContentFrame")
+
+        # Search for given postcode within the results
+        postcode = require_env("POSTCODE")
+        postcode_count = frame.get_by_text("postcode").count()
+        # Print whether the postcode was found or not
+        if postcode_count > 0:
+            print(f"✨ {postcode} is available!")
+        else:
+            print(f"❌ No matches for {postcode}")
+
+        # Cleanup
         browser.close()
 
 
