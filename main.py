@@ -15,7 +15,7 @@ def require_env(name: str) -> str:
 def main():
     with sync_playwright() as p:
         # Launch browser instance
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         context = browser.new_context()
         page = context.new_page()
 
