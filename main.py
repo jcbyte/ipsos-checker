@@ -59,6 +59,8 @@ def main():
         # Cleanup
         browser.close()
 
+        # todo handle timeouts properly
+
 
 if __name__ == "__main__":
     load_dotenv()
