@@ -23,4 +23,4 @@ if (-not (Test-Path $VenvPath)) {
 & $VenvPython $PyScript
 
 Write-Host "[Press any key to exit]" -ForegroundColor DarkGray -NoNewline
-[Console]::ReadKey($true)
+[Console]::ReadKey($true) | Out-Null
